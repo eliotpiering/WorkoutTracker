@@ -11,6 +11,7 @@ import {
   getCurrentLift,
 } from "../models/Workout";
 import { Lift } from "../models/Lift";
+import { CurrentProgress } from "../components/CurrentProgress";
 
 enum DataState {
   NotLoaded,
@@ -69,10 +70,10 @@ export default function NewWorkout() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>{currentLift.exercise}</Text>
+          <CurrentProgress workout={workout} />
         </View>
-        <View style={styles.separator}></View>
         <View style={styles.body}>
+          <Text style={styles.title}>{currentLift.exercise}</Text>
           {!!currentLift.targetReps && (
             <Text>Reps: {currentLift.targetReps}</Text>
           )}
@@ -90,23 +91,27 @@ export default function NewWorkout() {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    height: "100%",
+    /* marginTop: "5%", */
+    /* height: "100%", */
   },
   header: {
-    height: "25%",
+    height: "100px",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
   body: {
-    height: "50%",
+    flex: 3,
+    /* height: "50%", */
     alignItems: "center",
     justifyContent: "center",
   },
   footer: {
-    height: "25%",
+    flex: 1,
+    /* height: "25%", */
     alignItems: "center",
     justifyContent: "center",
   },

@@ -1,11 +1,12 @@
 import { Lift, cloneLift, deserializeLift } from "./Lift";
+import { Superset } from "./Superset";
 
 export interface Workout {
   name: string;
   startedAt: date;
   currentSet: number;
   currentLift: number;
-  lifts: Array<Array<Lift>>;
+  supersets: Array<Superset>;
 }
 
 export const emptyWorkout: Workout = {
@@ -13,8 +14,8 @@ export const emptyWorkout: Workout = {
   startedAt: null,
   currentSet: 0,
   currentLift: 0,
-  lifts: [],
-  /* lifts: [
+  supersets: [],
+  /* supersets: [
      *   [
      *     {
      *       exercise: "Single leg lift",
@@ -102,16 +103,16 @@ export const emptyWorkout: Workout = {
 };
 
 export function getCurrentLift(workout: Workout): Lift {
-  if (workout.lifts.length === 0) return null;
+  if (workout.supersets.length === 0) return null;
   /* console.table(workout); */
-  return workout.lifts[workout.currentSet][workout.currentLift];
+  return workout.supersets[workout.currentSet].lifts[workout.currentLift];
 }
 
 export function nextLift(w: Workout): Workout {
   let updatedWorkout = cloneWorkout(w);
-  if (w.currentLift === w.lifts[w.currentSet].length - 1) {
+  if (w.currentLift === w.supersets[w.currentSet].lifts.length - 1) {
     //At the end of a set
-    if (w.currentSet === w.lifts.length - 1) {
+    if (w.currentSet === w.supersets.length - 1) {
       // At the end of the workout
       console.log("WORKOUT DONE");
       updatedWorkout.currentSet = 0;
@@ -129,14 +130,14 @@ export function nextLift(w: Workout): Workout {
 }
 
 export function deserializeWorkout(json: Any): Workout {
-  const lifts = json.supersets.map((superset) => {
+  const newSupersets = json.supersets.map((superset) => {
     let liftIndex = 0;
     let attemptIndex = 0;
-    let supersetLifts = [];
+    let newSuperset = { name: superset.name, lifts: [] };
     while (true) {
-      /* console.log(`Lift INDEX ${liftIndex}`); */
-      /* console.log(`ATTEMPT UNDEX ${attemptIndex}`); */
-      /* console.log(`superset lifts ${supersetLifts}`); */
+      /* console.log(`Lift INDEX ${liftIndex}`);
+       * console.log(`ATTEMPT UNDEX ${attemptIndex}`);
+       * console.log(`newsupersets ${newSuperset}`); */
       const liftJson = superset.lifts[liftIndex];
       if (!liftJson) {
         /* No lift start a new round */
@@ -148,12 +149,12 @@ export function deserializeWorkout(json: Any): Workout {
         if (!!attemptJson) {
           const nextLift = deserializeLift(liftJson, attemptJson);
           /* console.table(nextLift); */
-          supersetLifts.push(nextLift);
+          newSuperset.lifts.push(nextLift);
           liftIndex += 1;
         } else {
           /* No attempt so we done with this supserset*/
-          /* FIXME its possible to miss attempts here, if the earlier lifts in the superset have fewer attmpts than the later lifts */
-          return supersetLifts;
+          /* FIXME its possible to miss attempts here, if the earlier supersets in the superset have fewer attmpts than the later supersets */
+          return newSuperset;
         }
       }
     }
@@ -163,7 +164,7 @@ export function deserializeWorkout(json: Any): Workout {
     startedAt: json.start_at,
     currentSet: 0,
     currentLift: 0,
-    lifts: lifts,
+    supersets: newSupersets,
   };
 }
 
@@ -172,15 +173,16 @@ export interface Workout {
   startedAt: date;
   currentSet: number;
   currentLift: number;
-  lifts: Array<Array<Lift>>;
+  supersets: Array<Array<Lift>>;
 }
 
 function cloneWorkout(w: Workout): Workout {
   const newWorkout = { ...w };
-  newWorkout.lifts = w.lifts.map((sett) => {
-    return sett.map((l) => {
+  newWorkout.supersets = w.supersets.map((sett) => {
+    const lifts = sett.lifts.map((l) => {
       return cloneLift(l);
     });
+    return { name: sett.name, lifts: lifts };
   });
   return newWorkout;
 }
