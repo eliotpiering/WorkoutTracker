@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 import { View, Text, Button } from "./Themed";
 
@@ -15,9 +15,9 @@ export function Timer(props: TimerProps) {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isEnded, setIsEnded] = useState<boolean>(false);
 
-  function toggle() {
+  const toggle = () => {
     setIsActive(!isActive);
-  }
+  };
 
   function reset() {
     setSeconds(0);
@@ -45,19 +45,45 @@ export function Timer(props: TimerProps) {
     return () => clearInterval(interval);
   }, [isActive, seconds]);
 
-  return (
-    <View>
-      {!isEnded && (
-        <Button title={isActive ? "Pause" : "Start"} onPress={toggle} />
-      )}
-      <Text style={styles.timer}>{seconds}</Text>
-    </View>
-  );
+  if (isEnded) {
+    return (
+      <View style={styles.emptyContainer} onPress={toggle}>
+        <Text>Done</Text>
+      </View>
+    );
+  } else {
+    return (
+      <TouchableOpacity style={styles.timerContainer} onPress={toggle}>
+        <Text style={styles.timer}>{isActive ? seconds.toString() : "GO"}</Text>
+      </TouchableOpacity>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
+  timerContainer: {
+    flex: 1,
+    flexWrap: "nowrap",
+    flexDirection: "row",
+    justifyContent: "center",
+    minWidth: 200,
+    backgroundColor: "#DDDDDD",
+    padding: 10,
+    alignItems: "center",
+  },
+  emptyContainer: {
+    flex: 1,
+    flexWrap: "nowrap",
+    flexDirection: "row",
+    justifyContent: "center",
+    minWidth: 200,
+    padding: 10,
+    alignItems: "center",
+  },
+
   timer: {
     fontSize: 50,
     fontWeight: "bold",
+    color: "black",
   },
 });

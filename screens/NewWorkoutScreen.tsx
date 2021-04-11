@@ -12,6 +12,8 @@ import {
 } from "../models/Workout";
 import { Lift } from "../models/Lift";
 import { CurrentProgress } from "../components/CurrentProgress";
+import { LiftInfo } from "../components/LiftInfo";
+import { ExerciseVideo } from "../components/ExerciseVideo";
 
 enum DataState {
   NotLoaded,
@@ -27,10 +29,9 @@ export default function NewWorkout() {
 
   React.useEffect(() => {
     if (currentDataState !== DataState.NotLoaded) return;
-    fetch("http://localhost:3000/workouts/1")
+    fetch("http://192.168.1.186:3000/workouts/3")
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         const workout = deserializeWorkout(json);
         updateWorkout(workout);
         setDataState(DataState.Loaded);
@@ -56,17 +57,6 @@ export default function NewWorkout() {
       </View>
     );
   } else {
-    let timer;
-    if (showTimer) {
-      timer = (
-        <Timer
-          liftId={currentLift.exercise}
-          time={currentLift.targetTime}
-          onTimerEnd={() => {}}
-        />
-      );
-    }
-
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -74,16 +64,26 @@ export default function NewWorkout() {
         </View>
         <View style={styles.body}>
           <Text style={styles.title}>{currentLift.exercise}</Text>
-          {!!currentLift.targetReps && (
-            <Text>Reps: {currentLift.targetReps}</Text>
+          <LiftInfo
+            reps={currentLift.targetReps}
+            weight={currentLift.targetWeight}
+            time={currentLift.targetTime}
+          />
+
+          {currentLift && !!currentLift.targetTime && (
+            <Timer
+              liftId={currentLift.exercise}
+              time={currentLift.targetTime}
+              onTimerEnd={() => {}}
+            />
           )}
-          <Text>Weight: {currentLift.targetWeight}</Text>
-          {showTimer && <Text>Target Time: {currentLift.targetTime}</Text>}
-          {!!timer && timer}
         </View>
+
         <View style={styles.footer}>
           <Button onPress={updateToNextWorkout} title="Next Lift"></Button>
         </View>
+
+        <ExerciseVideo exerciseName={currentLift.exercise} />
       </View>
     );
   }
@@ -94,11 +94,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "column",
     /* marginTop: "5%", */
-    /* height: "100%", */
+    height: "100%",
   },
   header: {
-    height: "100px",
+    height: 100,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
@@ -108,6 +109,7 @@ const styles = StyleSheet.create({
     /* height: "50%", */
     alignItems: "center",
     justifyContent: "center",
+    width: "100%",
   },
   footer: {
     flex: 1,
@@ -116,7 +118,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 40,
+    textAlign: "center",
+    fontSize: 30,
     fontWeight: "bold",
   },
   separator: { height: 50 },

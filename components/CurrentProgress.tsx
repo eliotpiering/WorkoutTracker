@@ -63,7 +63,7 @@ const progressbarStyle = (progress) => {
 };
 const supersetStyle = (width) => {
   return {
-    padding: "10px",
+    padding: 10,
     width: "" + width + "%",
     textAlign: "center",
   };
@@ -71,7 +71,7 @@ const supersetStyle = (width) => {
 
 const styles = StyleSheet.create({
   progressContainer: {
-    margin: "1rem",
+    margin: 1,
     flexWrap: "nowrap",
     flexDirection: "row",
     justifyContent: "center",
