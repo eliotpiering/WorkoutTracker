@@ -8,6 +8,9 @@ import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
 import NotFoundScreen from "../screens/NotFoundScreen";
+import WorkoutsScreen from "../screens/WorkoutsScreen";
+import NewWorkoutScreen from "../screens/NewWorkoutScreen";
+
 import { RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -36,7 +39,9 @@ const Stack = createStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen name="Root" component={BottomTabNavigator} />
+      <Stack.Screen name="Root" component={WorkoutsScreen} />
+      <Stack.Screen name="NewWorkout" component={NewWorkoutScreen} />
+
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}

@@ -21,7 +21,9 @@ enum DataState {
   Loaded,
 }
 
-export default function NewWorkout() {
+export default function NewWorkout({ route }) {
+  const { workoutId } = route.params;
+
   const [currentDataState, setDataState] = React.useState<DataState>(
     DataState.NotLoaded
   );
@@ -29,7 +31,7 @@ export default function NewWorkout() {
 
   React.useEffect(() => {
     if (currentDataState !== DataState.NotLoaded) return;
-    fetch("http://192.168.1.186:3000/workouts/3")
+    fetch(`http://192.168.1.186:3000/workouts/${workoutId}`)
       .then((response) => response.json())
       .then((json) => {
         const workout = deserializeWorkout(json);

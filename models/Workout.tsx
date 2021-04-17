@@ -9,6 +9,11 @@ export interface Workout {
   supersets: Array<Superset>;
 }
 
+export interface WorkoutShort {
+  id: number;
+  name: string;
+}
+
 export const emptyWorkout: Workout = {
   name: "",
   startedAt: null,
