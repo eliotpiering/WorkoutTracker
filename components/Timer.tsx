@@ -11,16 +11,21 @@ type TimerProps = {
 };
 
 export function Timer(props: TimerProps) {
-  const [seconds, setSeconds] = useState<number>(0);
+  const [endTime, setEndTime] = useState<number>(null);
+  const [msRemaining, setMsRemaining] = useState<number>(props.time * 1000);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isEnded, setIsEnded] = useState<boolean>(false);
 
   const toggle = () => {
+    if (!isActive) {
+      setEndTime(new Date().getTime() + msRemaining);
+    }
     setIsActive(!isActive);
   };
 
   function reset() {
-    setSeconds(0);
+    setMsRemaining(props.time * 1000);
+    setEndTime(null);
     setIsActive(false);
     setIsEnded(false);
   }
@@ -33,9 +38,9 @@ export function Timer(props: TimerProps) {
     let interval;
     if (isActive) {
       interval = setInterval(() => {
-        setSeconds((seconds) => seconds + 1);
-      }, 1000);
-      if (seconds >= props.time) {
+        setMsRemaining((msRemaining) => endTime - new Date().getTime());
+      }, 100);
+      if (msRemaining <= 0) {
         props.onTimerEnd();
         setIsActive(false);
         setIsEnded(true);
@@ -43,18 +48,22 @@ export function Timer(props: TimerProps) {
     }
 
     return () => clearInterval(interval);
-  }, [isActive, seconds]);
+  }, [isActive, msRemaining]);
 
   if (isEnded) {
     return (
       <View style={styles.emptyContainer} onPress={toggle}>
-        <Text>Done</Text>
+        <Text style={styles.intVal}>{props.time}</Text>
       </View>
     );
   } else {
+    const secondsRemaining = (msRemaining / 1000).toFixed(1);
+    const [intVal, decimalVal] = secondsRemaining.split(".");
     return (
       <TouchableOpacity style={styles.timerContainer} onPress={toggle}>
-        <Text style={styles.timer}>{isActive ? seconds.toString() : "GO"}</Text>
+        <Text style={styles.intVal}>{intVal}</Text>
+        <Text style={styles.point}>.</Text>
+        <Text style={styles.decimalVal}>{decimalVal}</Text>
       </TouchableOpacity>
     );
   }
@@ -86,4 +95,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
   },
+  intVal: { fontSize: 50, fontWeight: "bold" },
+  decimalVal: { fontSize: 30 },
+  point: {},
 });

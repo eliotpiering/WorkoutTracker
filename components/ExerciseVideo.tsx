@@ -4,6 +4,7 @@ import { Workout } from "../models/Workout";
 import { Text, Button, View } from "./Themed";
 import { Video } from "expo-av";
 
+import { useState } from "react";
 type ExerciseVideoProps = { exerciseName: string };
 
 export function ExerciseVideo(props: ExerciseVideoProps) {
@@ -11,11 +12,15 @@ export function ExerciseVideo(props: ExerciseVideoProps) {
     console.log("VIDEO ERROR" + err);
   };
   const [modalVisible, setModalVisible] = React.useState(false);
+
+  const handleVideoRef = (component) => {
+    const playbackObject = component;
+  };
   return (
     <View style={styles.container}>
       <Modal
         animationType="slide"
-        transparent={true}
+        transparent={false}
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
@@ -38,6 +43,7 @@ export function ExerciseVideo(props: ExerciseVideoProps) {
               shouldPlay
               isLooping
               useNativeControls
+              ref={handleVideoRef}
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -52,7 +58,7 @@ export function ExerciseVideo(props: ExerciseVideoProps) {
         style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.textStyle}>Show Video</Text>
+        <Text style={styles.textStyle}>Show Example</Text>
       </Pressable>
     </View>
   );
@@ -69,7 +75,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    opacity: 0.9,
   },
   modalView: {
     margin: 20,
