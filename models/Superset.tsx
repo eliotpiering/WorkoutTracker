@@ -1,5 +1,5 @@
-import { Lift } from "./Lift";
+import { Lift, RestBlock } from "./Lift";
 export interface Superset {
   name: string;
-  lifts: Array<Lift>;
+  lifts: Array<Lift | RestBlock>;
 }

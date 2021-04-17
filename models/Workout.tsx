@@ -107,7 +107,7 @@ export const emptyWorkout: Workout = {
      * ], */
 };
 
-export function getCurrentLift(workout: Workout): Lift {
+export function getCurrentLift(workout: Workout): Lift | RestBlock {
   if (workout.supersets.length === 0) return null;
   /* console.table(workout); */
   return workout.supersets[workout.currentSet].lifts[workout.currentLift];

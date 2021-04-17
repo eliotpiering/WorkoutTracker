@@ -12,7 +12,7 @@ import {
 
 import { deserializeWorkout } from "../serializers/WorkoutSerializer";
 import { deserializeExercises } from "../serializers/ExerciseSerializer";
-import { Lift } from "../models/Lift";
+import { Lift, RestBlock, isLift, isRestBlock } from "../models/Lift";
 import { CurrentProgress } from "../components/CurrentProgress";
 import { LiftInfo } from "../components/LiftInfo";
 import { ExerciseVideo } from "../components/ExerciseVideo";
@@ -49,16 +49,58 @@ export default function NewWorkout({ route }) {
 
   const updateToNextWorkout = () => updateWorkout(nextLift(workout));
 
-  let currentLift: Lift | null = getCurrentLift(workout);
+  let currentLift: Lift | RestBlock | null = getCurrentLift(workout);
 
   const [showTimer, setShowTimer] = React.useState<boolean>(
     currentLift && !!currentLift.targetTime
   );
 
   const exercise = exercises.find((ex) => {
+    if (isRestBlock(currentLift)) return false;
+
     return currentLift && ex.id == currentLift.exerciseId;
   });
 
+  /* ----------------------------------------------------------------------------------------------------
+     LIFT BODY VIEW
+  ---------------------------------------------------------------------------------------------------- */
+  let liftView;
+  if (isLift(currentLift)) {
+    liftView = (
+      <>
+        <Text style={styles.title}>{exercise.name}</Text>
+        <LiftInfo
+          reps={currentLift.targetReps}
+          weight={currentLift.targetWeight}
+          time={currentLift.targetTime}
+        />
+
+        {currentLift && !!currentLift.targetTime && (
+          <Timer
+            resetId={exercise.id}
+            time={currentLift.targetTime}
+            onTimerEnd={() => {}}
+          />
+        )}
+      </>
+    );
+  } else if (isRestBlock(currentLift)) {
+    liftView = (
+      <>
+        <Text style={styles.title}>Rest...</Text>
+        <Timer
+          resetId={currentLift.time.toString()}
+          time={currentLift.time}
+          startImmediately={true}
+          onTimerEnd={updateToNextWorkout}
+        />
+      </>
+    );
+  }
+
+  /* ----------------------------------------------------------------------------------------------------
+     Main View
+  ---------------------------------------------------------------------------------------------------- */
   if (!currentLift) {
     return (
       <View style={styles.container}>
@@ -73,28 +115,13 @@ export default function NewWorkout({ route }) {
         <View style={styles.header}>
           <CurrentProgress workout={workout} />
         </View>
-        <View style={styles.body}>
-          <Text style={styles.title}>{exercise.name}</Text>
-          <LiftInfo
-            reps={currentLift.targetReps}
-            weight={currentLift.targetWeight}
-            time={currentLift.targetTime}
-          />
-
-          {currentLift && !!currentLift.targetTime && (
-            <Timer
-              liftId={exercise.name}
-              time={currentLift.targetTime}
-              onTimerEnd={() => {}}
-            />
-          )}
-        </View>
+        <View style={styles.body}>{liftView}</View>
 
         <View style={styles.footer}>
           <Button onPress={updateToNextWorkout} title="Next Lift"></Button>
         </View>
 
-        <ExerciseVideo exercise={exercise} />
+        {!!exercise && <ExerciseVideo exercise={exercise} />}
       </View>
     );
   }

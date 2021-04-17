@@ -5,15 +5,18 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { View, Text, Button } from "./Themed";
 
 type TimerProps = {
-  liftId: string;
+  resetId: string;
   time: number;
   onTimerEnd: any;
+  startImmediately: boolean;
 };
 
 export function Timer(props: TimerProps) {
-  const [endTime, setEndTime] = useState<number>(null);
   const [msRemaining, setMsRemaining] = useState<number>(props.time * 1000);
-  const [isActive, setIsActive] = useState<boolean>(false);
+  const [endTime, setEndTime] = useState<number>(
+    props.startImmediately ? new Date().getTime() + msRemaining : null
+  );
+  const [isActive, setIsActive] = useState<boolean>(props.startImmediately);
   const [isEnded, setIsEnded] = useState<boolean>(false);
 
   const toggle = () => {
@@ -31,8 +34,8 @@ export function Timer(props: TimerProps) {
   }
 
   useEffect(() => {
-    reset();
-  }, [props.liftId]);
+    if (!isActive) reset();
+  }, [props.resetId]);
 
   useEffect(() => {
     let interval;

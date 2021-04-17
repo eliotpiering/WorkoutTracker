@@ -1,5 +1,5 @@
 import { WorkoutShort, Workout } from "../models/Workout";
-import { deserializeLift } from "../models/Lift";
+import { deserializeLift, restBlock } from "../models/Lift";
 
 export function deserializeWorkouts(json: Any): WorkoutShort {
   return json.map((workoutJson) => {
@@ -22,7 +22,7 @@ export function deserializeWorkout(json: Any): Workout {
       const liftJson = superset.lifts[liftIndex];
       if (!liftJson) {
         /* No lift start a new round */
-        /* FIXME: could add breaks here */
+        newSuperset.lifts.push(restBlock(superset.rest_time));
         liftIndex = 0;
         attemptIndex += 1;
       } else {
