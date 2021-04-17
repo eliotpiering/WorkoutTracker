@@ -1,5 +1,5 @@
 export interface Lift {
-  exercise: string;
+  exerciseId: number;
   targetWeight: number;
   targetReps: number;
   targetTime: number;
@@ -14,7 +14,7 @@ export function cloneLift(l: Lift): Lift {
 
 export function deserializeLift(liftJson: Any, attemptJson: Any): Lift {
   return {
-    exercise: liftJson.exercise.name,
+    exerciseId: liftJson.exercise.id,
     targetWeight: attemptJson.target_weight,
     targetReps: attemptJson.target_reps,
     targetTime: attemptJson.target_time,

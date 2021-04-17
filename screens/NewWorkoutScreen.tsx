@@ -7,9 +7,11 @@ import {
   Workout,
   emptyWorkout,
   nextLift,
-  deserializeWorkout,
   getCurrentLift,
 } from "../models/Workout";
+
+import { deserializeWorkout } from "../serializers/WorkoutSerializer";
+import { deserializeExercises } from "../serializers/ExerciseSerializer";
 import { Lift } from "../models/Lift";
 import { CurrentProgress } from "../components/CurrentProgress";
 import { LiftInfo } from "../components/LiftInfo";
@@ -28,6 +30,7 @@ export default function NewWorkout({ route }) {
     DataState.NotLoaded
   );
   const [workout, updateWorkout] = React.useState<Workout>(emptyWorkout);
+  const [exercises, updateExercises] = React.useState<Workout>([]);
 
   React.useEffect(() => {
     if (currentDataState !== DataState.NotLoaded) return;
@@ -35,6 +38,8 @@ export default function NewWorkout({ route }) {
       .then((response) => response.json())
       .then((json) => {
         const workout = deserializeWorkout(json);
+        const exercises = deserializeExercises(json["exercises"]);
+        updateExercises(exercises);
         updateWorkout(workout);
         setDataState(DataState.Loaded);
       });
@@ -49,6 +54,10 @@ export default function NewWorkout({ route }) {
   const [showTimer, setShowTimer] = React.useState<boolean>(
     currentLift && !!currentLift.targetTime
   );
+
+  const exercise = exercises.find((ex) => {
+    return currentLift && ex.id == currentLift.exerciseId;
+  });
 
   if (!currentLift) {
     return (
@@ -65,7 +74,7 @@ export default function NewWorkout({ route }) {
           <CurrentProgress workout={workout} />
         </View>
         <View style={styles.body}>
-          <Text style={styles.title}>{currentLift.exercise}</Text>
+          <Text style={styles.title}>{exercise.name}</Text>
           <LiftInfo
             reps={currentLift.targetReps}
             weight={currentLift.targetWeight}
@@ -74,7 +83,7 @@ export default function NewWorkout({ route }) {
 
           {currentLift && !!currentLift.targetTime && (
             <Timer
-              liftId={currentLift.exercise}
+              liftId={exercise.name}
               time={currentLift.targetTime}
               onTimerEnd={() => {}}
             />
@@ -85,7 +94,7 @@ export default function NewWorkout({ route }) {
           <Button onPress={updateToNextWorkout} title="Next Lift"></Button>
         </View>
 
-        <ExerciseVideo exerciseName={currentLift.exercise} />
+        <ExerciseVideo exercise={exercise} />
       </View>
     );
   }

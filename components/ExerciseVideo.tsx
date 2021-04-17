@@ -1,11 +1,12 @@
 import * as React from "react";
 import { Modal, Pressable, StyleSheet } from "react-native";
 import { Workout } from "../models/Workout";
+import { Exercise } from "../models/Exercise";
 import { Text, Button, View } from "./Themed";
 import { Video } from "expo-av";
 
 import { useState } from "react";
-type ExerciseVideoProps = { exerciseName: string };
+type ExerciseVideoProps = { exercise: Exercise };
 
 export function ExerciseVideo(props: ExerciseVideoProps) {
   const videoError = (err) => {
@@ -30,8 +31,7 @@ export function ExerciseVideo(props: ExerciseVideoProps) {
           <View style={styles.modalView}>
             <Video
               source={{
-                uri:
-                  "https://ep-files.nyc3.cdn.digitaloceanspaces.com/spiderman.mkv",
+                uri: props.exercise.video,
               }} // Can be a URL or a local file.
               /* ref={(ref) => {
                *   this.player = ref;
