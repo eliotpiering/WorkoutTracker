@@ -22,11 +22,6 @@ export function LiftInfo(props: LiftInfoProps) {
           Weight{"\n"} {props.weight}
         </Text>
       )}
-      {props.time && (
-        <Text style={styles.info}>
-          Time{"\n"} {props.time}
-        </Text>
-      )}
     </View>
   );
 }

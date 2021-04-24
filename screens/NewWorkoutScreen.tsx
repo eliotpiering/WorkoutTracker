@@ -1,7 +1,8 @@
 import * as React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 
 import { Text, Button, View } from "../components/Themed";
+
 import { Timer } from "../components/Timer";
 import {
   Workout,
@@ -68,7 +69,12 @@ export default function NewWorkout({ route }) {
   if (isLift(currentLift)) {
     liftView = (
       <>
-        <Text style={styles.title}>{exercise.name}</Text>
+        <View style={styles.liftHeader}>
+          <View style={styles.liftTitle}>
+            <Text style={styles.title}>{exercise.name}</Text>
+          </View>
+          {exercise.video && <ExerciseVideo exercise={exercise} />}
+        </View>
         <LiftInfo
           reps={currentLift.targetReps}
           weight={currentLift.targetWeight}
@@ -118,10 +124,13 @@ export default function NewWorkout({ route }) {
         <View style={styles.body}>{liftView}</View>
 
         <View style={styles.footer}>
-          <Button onPress={updateToNextWorkout} title="Next Lift"></Button>
+          <Pressable
+            style={styles.nextLiftButton}
+            onPress={updateToNextWorkout}
+          >
+            <Text>Next Lift</Text>
+          </Pressable>
         </View>
-
-        {!!exercise && <ExerciseVideo exercise={exercise} />}
       </View>
     );
   }
@@ -133,7 +142,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
-    /* marginTop: "5%", */
     height: "100%",
   },
   header: {
@@ -141,6 +149,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
+    margin: 10,
   },
   body: {
     flex: 3,
@@ -148,12 +157,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
+    margin: 10,
   },
   footer: {
     flex: 1,
     /* height: "25%", */
     alignItems: "center",
     justifyContent: "center",
+    margin: 10,
+    flexDirection: "row",
   },
   title: {
     textAlign: "center",
@@ -161,4 +173,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   separator: { height: 50 },
+  nextLiftButton: {
+    backgroundColor: "#2196F3",
+    margin: 10,
+    padding: 10,
+    elevation: 2,
+  },
+  liftHeader: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 2,
+  },
+  liftTitle: {
+    maxWidth: "66%",
+  },
 });

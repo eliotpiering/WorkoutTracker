@@ -5,7 +5,7 @@ export function deserializeExercises(json: Any): Exercise {
     return {
       id: json.id,
       name: json.name,
-      video: json.video,
+      video: json.video_url,
     };
   });
 }

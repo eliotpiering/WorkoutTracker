@@ -47,9 +47,11 @@ function SupersetProgress(props: SupersetProgressProps) {
   const width = 100 / props.totalSupersets;
   return (
     <View style={supersetStyle(width)}>
-      <Text>{props.name}</Text>
       <View style={progressbarStyle(progress)}>
-        <Text>%</Text>
+        <Text> </Text>
+      </View>
+      <View style={styles.title}>
+        <Text>{props.name}</Text>
       </View>
     </View>
   );
@@ -76,5 +78,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
+  },
+  title: {
+    flex: 4,
   },
 });

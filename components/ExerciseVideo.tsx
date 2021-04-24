@@ -4,6 +4,7 @@ import { Workout } from "../models/Workout";
 import { Exercise } from "../models/Exercise";
 import { Text, Button, View } from "./Themed";
 import { Video } from "expo-av";
+import { Foundation } from "@expo/vector-icons";
 
 import { useState } from "react";
 type ExerciseVideoProps = { exercise: Exercise };
@@ -58,7 +59,9 @@ export function ExerciseVideo(props: ExerciseVideoProps) {
         style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.textStyle}>Show Example</Text>
+        <Text>
+          <Foundation name="play-video" size={50} color="black" />
+        </Text>
       </Pressable>
     </View>
   );
@@ -66,7 +69,6 @@ export function ExerciseVideo(props: ExerciseVideoProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 6,
@@ -91,15 +93,20 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    margin: 10,
-    padding: 10,
-    elevation: 2,
+    elevation: 5,
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: "#DDDDDD",
+    borderRadius: 50,
+    width: 70,
+    height: 70,
+    padding: 10,
+    margin: 10,
   },
   buttonClose: {
     backgroundColor: "#2196F3",
+    margin: 20,
+    padding: 20,
   },
   textStyle: {
     color: "white",
