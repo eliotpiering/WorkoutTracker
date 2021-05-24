@@ -10,9 +10,10 @@ import { ColorSchemeName } from "react-native";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import WorkoutsScreen from "../screens/WorkoutsScreen";
 import NewWorkoutScreen from "../screens/NewWorkoutScreen";
+import NewProgramScreen from "../screens/NewProgramScreen";
+import ProgramsScreen from "../screens/ProgramsScreen";
 
 import { RootStackParamList } from "../types";
-import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 
 // If you are not familiar with React Navigation, we recommend going through the
@@ -41,6 +42,8 @@ function RootNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Root" component={WorkoutsScreen} />
       <Stack.Screen name="NewWorkout" component={NewWorkoutScreen} />
+      <Stack.Screen name="Programs" component={ProgramsScreen} />
+      <Stack.Screen name="NewProgram" component={NewProgramScreen} />
 
       <Stack.Screen
         name="NotFound"
